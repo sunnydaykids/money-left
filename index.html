@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171717">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Money Left">
+<link rel="manifest" href="manifest.json">
+<title>Money Left — Personal Money Tracker</title>
+<style>
+:root{color-scheme:light;--ink:#202124;--muted:#6b7280;--line:#e5e7eb;--paper:#f7f7f5;--card:#fff;--gold:#b98538;--green:#19734a;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#171717;color:#fff;padding:calc(18px + env(safe-area-inset-top)) 18px 18px}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:22px;margin:0;font-weight:750;letter-spacing:-.4px}.sub{color:#c8c8c8;font-size:13px;margin-top:3px}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 14px;font-weight:650;background:#202124;color:#fff}.button-gold{background:var(--gold);color:#171717}.button-light{background:#f0f0ed;color:#222}.button-quiet{background:transparent;color:inherit;border:1px solid var(--line)}.icon-button{padding:9px 11px;background:#333;color:white}
+main{max-width:780px;margin:0 auto;padding:16px 14px 40px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:13px;box-shadow:0 2px 8px #00000005}
+.balance-card{background:#202124;color:white;border:0;padding:20px}.balance-label{font-size:13px;color:#d0d0d0}.balance{font-size:42px;font-weight:780;letter-spacing:-1.5px;margin:4px 0 2px;font-variant-numeric:tabular-nums}.balance-note{font-size:13px;color:#c7c7c7}.balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.mini-label{font-size:12px;color:#bdbdbd}.mini-value{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}.section-title{font-size:17px;font-weight:750;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.row + .row{margin-top:12px}.money{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.negative{color:var(--red)}.positive{color:var(--green)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}.actions button{padding:14px 10px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field.full{grid-column:1/-1}label{font-size:12px;font-weight:700;color:#52525b}input,select{width:100%;border:1px solid #d4d4d8;border-radius:10px;padding:11px;background:#fff;color:#202124;min-width:0}input[type=checkbox]{width:auto}.form-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.hidden{display:none!important}.transaction{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}.transaction:last-child{border-bottom:0}.tx-icon{height:38px;width:38px;flex:0 0 38px;border-radius:12px;background:#f1f1ef;display:grid;place-items:center;font-weight:800}.tx-main{flex:1;min-width:0}.tx-name{font-weight:650;overflow-wrap:anywhere}.tx-meta{font-size:12px;color:var(--muted)}.tx-amount{font-weight:750;white-space:nowrap;font-variant-numeric:tabular-nums}.tx-tools{display:flex;gap:5px;margin-left:3px}.tx-tools button{padding:6px 8px;font-size:12px;border-radius:8px}.pill{display:inline-block;font-size:11px;border-radius:999px;padding:3px 8px;background:#f2e7d5;color:#77501d;font-weight:700}.notice{background:#fff8e9;border:1px solid #f1ddb2;padding:11px 12px;border-radius:12px;font-size:13px;color:#654b20;margin-bottom:12px}.bill-line{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}.bill-line:last-child{border-bottom:0}.bill-name{font-weight:650}.small-btn{padding:7px 10px;font-size:12px}.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:13px}.tab{background:#e8e8e5;color:#333;white-space:nowrap;padding:9px 12px}.tab.active{background:#202124;color:white}.footer{font-size:12px;color:#777;text-align:center;padding:10px}.empty{color:#777;font-size:14px;padding:15px 0}.summary-line{padding:9px 0;border-bottom:1px solid #f1f1f1}.summary-line:last-child{border-bottom:0}
+@media(max-width:420px){.balance{font-size:36px}.form-grid{grid-template-columns:1fr 1fr}.card{padding:15px}.balance-grid{gap:8px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-row">
+    <div><h1>Money Left</h1><div class="sub">Your money, without category limits.</div></div>
+    <button class="icon-button" id="settingsOpen" aria-label="Settings">Settings</button>
+  </div>
+</header>
+<main>
+  <div id="setupNotice" class="notice hidden"></div>
+  <section class="card balance-card">
+    <div class="balance-label">AVAILABLE AFTER RESERVING UNPAID BILLS</div>
+    <div class="balance" id="available">$0.00</div>
+    <div class="balance-note" id="balanceNote">Includes rollover and this month's allowance.</div>
+    <div class="balance-grid">
+      <div><div class="mini-label">Unpaid bills reserved</div><div class="mini-value" id="reserved">$0.00</div></div>
+      <div><div class="mini-label">This month's spending</div><div class="mini-value" id="spent">$0.00</div></div>
+      <div><div class="mini-label">Rollover brought forward</div><div class="mini-value" id="rollover">$0.00</div></div>
+      <div><div class="mini-label">Next monthly allowance</div><div class="mini-value" id="nextAllowance">1st of next month</div></div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="button-gold" id="addExpenseBtn">＋ Log purchase</button>
+    <button class="button-light" id="addIncomeBtn">＋ Add income / extra pay</button>
+    <button class="button-light" id="addBillBtn">＋ Add recurring bill</button>
+    <button class="button-light" id="addTransferBtn">⇄ Transfer to savings</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="activity">Activity</button>
+    <button class="tab" data-tab="bills">Bills</button>
+    <button class="tab" data-tab="months">Monthly summary</button>
+  </div>
+
+  <section id="activityPanel" class="card">
+    <div class="row"><h2 class="section-title">Recent activity</h2><span class="pill" id="monthLabel"></span></div>
+    <div class="muted" style="margin-bottom:8px">Every purchase comes out of the same balance. Categories are labels only, not spending limits.</div>
+    <div id="transactions"></div>
+  </section>
+
+  <section id="billsPanel" class="card hidden">
+    <div class="row"><h2 class="section-title">Recurring bills</h2><button class="small-btn button-light" id="billAddInline">＋ Add</button></div>
+    <div class="muted">Bills are reserved until their due date, then recorded as paid when the app is opened. This does not move money at your bank.</div>
+    <div id="billsList" style="margin-top:8px"></div>
+  </section>
+
+  <section id="monthsPanel" class="card hidden">
+    <h2 class="section-title">Monthly summary</h2>
+    <div class="muted" style="margin-bottom:10px">The leftover amount rolls into the next month automatically. You can export a backup at any time.</div>
+    <div id="monthlySummary"></div>
+  </section>
+
+  <section id="transactionForm" class="card hidden">
+    <h2 class="section-title" id="txFormTitle">Log purchase</h2>
+    <form id="txForm">
+      <input type="hidden" id="txId">
+      <input type="hidden" id="txType" value="expense">
+      <div class="form-grid">
+        <div class="field"><label for="txAmount">Amount ($)</label><input id="txAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
+        <div class="field"><label for="txDate">Date</label><input id="txDate" type="date" required></div>
+        <div class="field full"><label for="txDescription">Description</label><input id="txDescription" maxlength="100" placeholder="e.g. Candy, dinner, gift" required></div>
+        <div class="field"><label for="txCategory">Label (optional)</label><select id="txCategory"><option>Miscellaneous</option><option>Gas</option><option>Groceries</option><option>Restaurant</option><option>Shopping</option><option>Entertainment</option><option>Gift</option><option>Health</option><option>Travel</option><option>Other</option></select></div>
+        <div class="field"><label for="txTypeSelect">Transaction type</label><select id="txTypeSelect"><option value="expense">Purchase / expense</option><option value="income">Income / extra paycheck</option><option value="transfer">Transfer to savings</option><option value="refund">Refund / money back</option></select></div>
+      </div>
+      <div class="form-actions"><button class="button-gold" type="submit">Save transaction</button><button type="button" class="button-light" id="txCancel">Cancel</button></div>
+    </form>
+  </section>
+
+  <section id="billForm" class="card hidden">
+    <h2 class="section-title" id="billFormTitle">Add recurring bill</h2>
+    <form id="billFormEl">
+      <input type="hidden" id="billId">
+      <div class="form-grid">
+        <div class="field full"><label for="billName">Bill name</label><input id="billName" maxlength="80" placeholder="e.g. Rent, Internet, Credit card" required></div>
+        <div class="field"><label for="billAmount">Amount ($)</label><input id="billAmount" type="number" min="0.01" step="0.01" required></div>
+        <div class="field"><label for="billDay">Due day each month</label><select id="billDay" required></select></div>
+        <div class="field"><label for="billStart">Start month</label><input id="billStart" type="month" required></div>
+        <div class="field"><label for="billCategory">Type</label><select id="billCategory"><option>Fixed bill</option><option>Rent</option><option>Credit card</option><option>Utilities</option><option>Subscription</option><option>Loan</option><option>Other</option></select></div>
+      </div>
+      <div class="form-actions"><button class="button-gold" type="submit">Save bill</button><button type="button" class="button-light" id="billCancel">Cancel</button></div>
+    </form>
+  </section>
+
+  <section id="settingsPanel" class="card hidden">
+    <div class="row"><h2 class="section-title">Settings</h2><button class="small-btn button-light" id="settingsClose">Close</button></div>
+    <form id="settingsForm">
+      <div class="form-grid">
+        <div class="field"><label for="monthlyAllowance">Monthly allowance ($)</label><input id="monthlyAllowance" type="number" min="0" step="0.01" required></div>
+        <div class="field"><label for="openingBalance">Opening balance ($)</label><input id="openingBalance" type="number" step="0.01" required></div>
+        <div class="field full"><label for="startMonth">First month tracked</label><input id="startMonth" type="month" required></div>
+      </div>
+      <p class="muted">Opening balance is the amount you want to bring into this tracker separately from the monthly allowance. Choose a start month carefully so you don't count money twice.</p>
+      <div class="form-actions"><button class="button-gold" type="submit">Save settings</button></div>
+    </form>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <h3 style="font-size:15px;margin:0 0 8px">Backup & restore</h3>
+    <p class="muted">Export a JSON backup for safekeeping, or restore one you exported earlier. This prototype stores data on this device/browser; clearing browser data can erase it.</p>
+    <div class="form-actions">
+      <button type="button" class="button-light" id="exportBtn">Export backup</button>
+      <button type="button" class="button-light" id="importBtn">Import backup</button>
+      <input id="importFile" class="hidden" type="file" accept="application/json,.json">
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <h3 style="font-size:15px;margin:0 0 8px">Reset prototype</h3>
+    <p class="muted">Permanently clears this app's local data on this device. Export a backup first if you might need it.</p>
+    <button type="button" id="resetBtn" style="background:#a62922">Reset all app data</button>
+  </section>
+
+  <div class="footer">Prototype · Local data only · Not connected to your bank</div>
+</main>
+<script>
+(() => {
+const KEY='money-left-v1';
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const monthKey=(s)=>String(s||todayISO()).slice(0,7);
+const addMonths=(ym,n)=>{let [y,m]=ym.split('-').map(Number);const d=new Date(y,m-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`};
+const fmt=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(n)||0);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const monthName=ym=>new Date(Number(ym.slice(0,4)),Number(ym.slice(5,7))-1,1).toLocaleDateString(undefined,{month:'long',year:'numeric'});
+const dueDate=(ym,day)=>{const [y,m]=ym.split('-').map(Number);const last=new Date(y,m,0).getDate();return `${ym}-${String(Math.min(Number(day)||1,last)).padStart(2,'0')}`};
+const fresh=()=>({version:1,settings:{monthlyAllowance:4120,openingBalance:0,startMonth:monthKey(todayISO())},bills:[],transactions:[],monthlyCredits:[],paidBills:[]});
+let state;
+try{state=JSON.parse(localStorage.getItem(KEY)||'null')||fresh()}catch{state=fresh()}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function ensureCredits(){
+ const start=monthKey(state.settings.startMonth||todayISO()), now=monthKey(todayISO());
+ let m=start, guard=0;
+ while(m<=now&&guard++<240){if(!state.monthlyCredits.some(x=>x.month===m))state.monthlyCredits.push({id:'allowance-'+m,month:m,amount:Number(state.settings.monthlyAllowance)||0});m=addMonths(m,1)}
+ state.monthlyCredits.sort((a,b)=>a.month.localeCompare(b.month));
+}
+function billKey(b,ym){return `${b.id}@${ym}`}
+function processDueBills(){
+ const today=todayISO(), start=monthKey(state.settings.startMonth||today);
+ for(const b of state.bills){
+  if(!b.active)continue;
+  let m=start,guard=0;
+  while(m<=monthKey(today)&&guard++<240){
+   const due=dueDate(m,b.day);
+   const k=billKey(b,m);
+   if(due<=today&&!state.paidBills.some(p=>p.key===k)){
+    state.transactions.push({id:'billtx-'+k,type:'bill',amount:Number(b.amount)||0,date:due,description:b.name,category:b.category||'Fixed bill',billId:b.id,month:m,auto:true});
+    state.paidBills.push({key:k,billId:b.id,month:m,date:due});
+   }
+   m=addMonths(m,1);
+  }
+ }
+}
+function monthCreditsThrough(ym){return state.monthlyCredits.filter(x=>x.month<=ym).reduce((s,x)=>s+Number(x.amount||0),0)}
+function transactionsThrough(ym){return state.transactions.filter(t=>monthKey(t.date)<=ym).reduce((s,t)=>s+((t.type==='income'||t.type==='refund')?Number(t.amount||0):-Number(t.amount||0)),0)}
+function openingThrough(){return Number(state.settings.openingBalance)||0}
+function unpaidBillsThroughCurrent(){
+ const ym=monthKey(todayISO()), start=monthKey(state.settings.startMonth||todayISO());let total=0;
+ for(const b of state.bills){if(!b.active)continue;let m=(b.startMonth && b.startMonth>start)?b.startMonth:start,guard=0;while(m<=ym&&guard++<240){const due=dueDate(m,b.day);if(due>=todayISO()&&!state.paidBills.some(p=>p.key===billKey(b,m)))total+=Number(b.amount)||0;m=addMonths(m,1)}}
+ return total;
+}
+function totalFunds(){const now=monthKey(todayISO());return openingThrough()+monthCreditsThrough(now)+transactionsThrough(now)}
+function available(){return totalFunds()-unpaidBillsThroughCurrent()}
+function currentMonthSpend(){const ym=monthKey(todayISO());return state.transactions.filter(t=>monthKey(t.date)===ym&&['expense','transfer','bill'].includes(t.type)).reduce((s,t)=>s+Number(t.amount||0),0)}
+function rolloverBroughtForward(){const ym=monthKey(todayISO());return openingThrough()+state.monthlyCredits.filter(x=>x.month<ym).reduce((s,x)=>s+Number(x.amount||0),0)+state.transactions.filter(t=>monthKey(t.date)<ym).reduce((s,t)=>s+((t.type==='income'||t.type==='refund')?Number(t.amount||0):-Number(t.amount||0)),0)}
+function show(id,yes=true){document.getElementById(id).classList.toggle('hidden',!yes)}
+function fillDueDays(){const el=document.getElementById('billDay');el.innerHTML=Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}${[1,21,31].includes(i+1)?'st':[2,22].includes(i+1)?'nd':[3,23].includes(i+1)?'rd':'th'} of month</option>`).join('')}
+function render(){
+ ensureCredits();processDueBills();save();
+ const ym=monthKey(todayISO());document.getElementById('available').textContent=fmt(available());document.getElementById('reserved').textContent=fmt(unpaidBillsThroughCurrent());document.getElementById('spent').textContent=fmt(currentMonthSpend());document.getElementById('rollover').textContent=fmt(rolloverBroughtForward());
+ document.getElementById('nextAllowance').textContent=fmt(state.settings.monthlyAllowance)+' · '+addMonths(ym,1)+'-01';
+ document.getElementById('monthLabel').textContent=monthName(ym);
+ const start=monthKey(state.settings.startMonth||ym);
+ document.getElementById('setupNotice').classList.toggle('hidden',state.bills.length>0);
+ document.getElementById('setupNotice').textContent='First setup: add your real recurring bills and due days in the Bills tab, then set your opening balance in Settings. The starter monthly allowance is $4,120. Edit it if you are starting partway through a month.';
+ const txs=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
+ const list=document.getElementById('transactions');
+ if(!txs.length)list.innerHTML='<div class="empty">No transactions yet. Add a purchase to get started.</div>';
+ else list.innerHTML=txs.slice(0,60).map(t=>{const isIn=t.type==='income'||t.type==='refund';const icon=t.type==='bill'?'↻':t.type==='transfer'?'⇄':isIn?'+':'−';const sign=isIn?'+':'−';return `<div class="transaction"><div class="tx-icon">${icon}</div><div class="tx-main"><div class="tx-name">${esc(t.description)} ${t.auto?'<span class="pill">Scheduled</span>':''}</div><div class="tx-meta">${esc(t.date)} · ${esc(t.category||t.type)}</div></div><div class="tx-amount ${isIn?'positive':''}">${sign}${fmt(t.amount)}</div><div class="tx-tools">${t.auto?'<span class="muted">Auto</span>':`<button class="button-light" data-edit-tx="${esc(t.id)}">Edit</button><button class="button-light" data-del-tx="${esc(t.id)}">×</button>`}</div></div>`}).join('');
+ const bl=document.getElementById('billsList');
+ if(!state.bills.length)bl.innerHTML='<div class="empty">No recurring bills yet. Add rent and your other fixed bills here.</div>';
+ else bl.innerHTML=state.bills.map(b=>{const next=dueDate(ym,b.day);const paid=state.paidBills.some(p=>p.key===billKey(b,ym));return `<div class="bill-line"><div><div class="bill-name">${esc(b.name)} ${paid?'<span class="pill">Recorded this month</span>':''}</div><div class="tx-meta">${fmt(b.amount)} · due day ${b.day} · ${esc(b.category||'Bill')}</div></div><div class="tx-tools"><button class="button-light small-btn" data-edit-bill="${esc(b.id)}">Edit</button><button class="button-light small-btn" data-del-bill="${esc(b.id)}">×</button></div></div>`}).join('');
+ const sm=document.getElementById('monthlySummary');
+ const months=[...new Set([...state.monthlyCredits.map(x=>x.month),...state.transactions.map(t=>monthKey(t.date))])].sort().reverse();
+ if(!months.length)sm.innerHTML='<div class="empty">Your monthly history will appear here.</div>';
+ else sm.innerHTML=months.slice(0,18).map(m=>{const inc=state.monthlyCredits.filter(x=>x.month===m).reduce((s,x)=>s+Number(x.amount||0),0)+state.transactions.filter(t=>monthKey(t.date)===m&&['income','refund'].includes(t.type)).reduce((s,t)=>s+Number(t.amount||0),0);const out=state.transactions.filter(t=>monthKey(t.date)===m&&['expense','bill','transfer'].includes(t.type)).reduce((s,t)=>s+Number(t.amount||0),0);return `<div class="summary-line row"><div><strong>${esc(monthName(m))}</strong><div class="tx-meta">Income ${fmt(inc)} · Outflow ${fmt(out)}</div></div><strong>${fmt(inc-out)}</strong></div>`}).join('');
+ document.getElementById('monthlyAllowance').value=state.settings.monthlyAllowance;document.getElementById('openingBalance').value=state.settings.openingBalance;document.getElementById('startMonth').value=state.settings.startMonth;
+}
+function openTx(type='expense',tx=null){show('billForm',false);show('settingsPanel',false);show('transactionForm');document.getElementById('txFormTitle').textContent=tx?'Edit transaction':type==='income'?'Add income':type==='transfer'?'Transfer to savings':type==='refund'?'Log refund':'Log purchase';document.getElementById('txId').value=tx?.id||'';document.getElementById('txType').value=type;document.getElementById('txAmount').value=tx?.amount??'';document.getElementById('txDate').value=tx?.date||todayISO();document.getElementById('txDescription').value=tx?.description||'';document.getElementById('txCategory').value=tx?.category||'Miscellaneous';document.getElementById('txTypeSelect').value=tx?.type==='bill'?'expense':tx?.type||type;document.getElementById('transactionForm').scrollIntoView({behavior:'smooth',block:'start'})}
+function openBill(b=null){show('transactionForm',false);show('settingsPanel',false);show('billForm');document.getElementById('billFormTitle').textContent=b?'Edit recurring bill':'Add recurring bill';document.getElementById('billId').value=b?.id||'';document.getElementById('billName').value=b?.name||'';document.getElementById('billAmount').value=b?.amount??'';document.getElementById('billDay').value=b?.day||1;document.getElementById('billStart').value=b?.startMonth||monthKey(todayISO());document.getElementById('billCategory').value=b?.category||'Fixed bill';document.getElementById('billForm').scrollIntoView({behavior:'smooth',block:'start'})}
+document.getElementById('addExpenseBtn').onclick=()=>openTx('expense');
+document.getElementById('addIncomeBtn').onclick=()=>openTx('income');
+document.getElementById('addTransferBtn').onclick=()=>openTx('transfer');
+document.getElementById('addBillBtn').onclick=()=>openBill();
+document.getElementById('billAddInline').onclick=()=>openBill();
+document.getElementById('txCancel').onclick=()=>show('transactionForm',false);
+document.getElementById('billCancel').onclick=()=>show('billForm',false);
+document.getElementById('settingsOpen').onclick=()=>{show('settingsPanel');document.getElementById('settingsPanel').scrollIntoView({behavior:'smooth'})};
+document.getElementById('settingsClose').onclick=()=>show('settingsPanel',false);
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===btn));show('activityPanel',btn.dataset.tab==='activity');show('billsPanel',btn.dataset.tab==='bills');show('monthsPanel',btn.dataset.tab==='months');show('transactionForm',false);show('billForm',false);show('settingsPanel',false)});
+document.getElementById('txTypeSelect').onchange=e=>{const v=e.target.value;document.getElementById('txFormTitle').textContent=v==='income'?'Add income':v==='transfer'?'Transfer to savings':v==='refund'?'Log refund':'Log purchase'};
+document.getElementById('txForm').onsubmit=e=>{e.preventDefault();const id=document.getElementById('txId').value||'tx-'+Date.now();const type=document.getElementById('txTypeSelect').value;const old=state.transactions.find(t=>t.id===id);const t={id,type,amount:Math.round(Number(document.getElementById('txAmount').value)*100)/100,date:document.getElementById('txDate').value,description:document.getElementById('txDescription').value.trim(),category:document.getElementById('txCategory').value};if(old)state.transactions=state.transactions.filter(x=>x.id!==id);state.transactions.push(t);save();show('transactionForm',false);render()};
+document.getElementById('billFormEl').onsubmit=e=>{e.preventDefault();const id=document.getElementById('billId').value||'bill-'+Date.now();const old=state.bills.find(b=>b.id===id);const b={id,name:document.getElementById('billName').value.trim(),amount:Math.round(Number(document.getElementById('billAmount').value)*100)/100,day:Number(document.getElementById('billDay').value),startMonth:document.getElementById('billStart').value,category:document.getElementById('billCategory').value,active:true};if(old)state.bills=state.bills.map(x=>x.id===id?b:x);else state.bills.push(b);save();show('billForm',false);render()};
+document.getElementById('settingsForm').onsubmit=e=>{e.preventDefault();const oldStart=state.settings.startMonth;state.settings.monthlyAllowance=Math.round(Number(document.getElementById('monthlyAllowance').value)*100)/100;state.settings.openingBalance=Math.round(Number(document.getElementById('openingBalance').value)*100)/100;state.settings.startMonth=document.getElementById('startMonth').value; if(oldStart!==state.settings.startMonth){state.monthlyCredits=state.monthlyCredits.filter(x=>x.month<state.settings.startMonth);state.paidBills=state.paidBills.filter(p=>p.month>=state.settings.startMonth);state.transactions=state.transactions.filter(t=>!t.auto||monthKey(t.date)>=state.settings.startMonth)}save();render();alert('Settings saved.')};
+document.body.addEventListener('click',e=>{
+ const et=e.target.closest('[data-edit-tx]');if(et){const t=state.transactions.find(x=>x.id===et.dataset.editTx);if(t)openTx(t.type,t);return}
+ const dt=e.target.closest('[data-del-tx]');if(dt){const t=state.transactions.find(x=>x.id===dt.dataset.delTx);if(t&&confirm(`Delete "${t.description}"?`)){state.transactions=state.transactions.filter(x=>x.id!==t.id);if(t.auto){state.paidBills=state.paidBills.filter(p=>p.key!==billKey({id:t.billId},t.month))}save();render()}return}
+ const eb=e.target.closest('[data-edit-bill]');if(eb){const b=state.bills.find(x=>x.id===eb.dataset.editBill);if(b)openBill(b);return}
+ const db=e.target.closest('[data-del-bill]');if(db){const b=state.bills.find(x=>x.id===db.dataset.delBill);if(b&&confirm(`Delete recurring bill "${b.name}"? Past recorded payments remain in activity.`)){state.bills=state.bills.filter(x=>x.id!==b.id);save();render()}return}
+});
+document.getElementById('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`money-left-backup-${todayISO()}.json`;a.click();URL.revokeObjectURL(a.href)};
+document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d.settings||!Array.isArray(d.transactions)||!Array.isArray(d.bills))throw new Error('Invalid backup');if(confirm('Replace the current app data with this backup?')){state=d;save();render();alert('Backup restored.')}}catch(err){alert('Could not import that backup file.')}e.target.value=''};
+document.getElementById('resetBtn').onclick=()=>{if(confirm('Delete ALL Money Left data stored in this browser? Export a backup first if needed.')){localStorage.removeItem(KEY);state=fresh();save();render();show('settingsPanel',false);alert('App data reset.')}};
+fillDueDays();ensureCredits();processDueBills();save();render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
