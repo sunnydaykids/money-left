@@ -1,5 +1,5 @@
 {
-  "name": "Money Left \u2014 Personal Money Tracker",
+  "name": "Money Left — Personal Money Tracker",
   "short_name": "Money Left",
   "start_url": "./index.html",
   "scope": "./",
@@ -7,5 +7,12 @@
   "background_color": "#f7f7f5",
   "theme_color": "#171717",
   "description": "A simple running balance with recurring bills, rollover, and exportable local backups.",
-  "icons": []
+  "icons": [
+    {
+      "src": "./icon2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }

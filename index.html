@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Money Left">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="./icon2.png">
 <title>Money Left — Personal Money Tracker</title>
 <style>
 :root{color-scheme:light;--ink:#202124;--muted:#6b7280;--line:#e5e7eb;--paper:#f7f7f5;--card:#fff;--gold:#b98538;--green:#19734a;--red:#b42318}
@@ -16,7 +17,7 @@ header{background:#171717;color:#fff;padding:calc(18px + env(safe-area-inset-top
 .header-row{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:22px;margin:0;font-weight:750;letter-spacing:-.4px}.sub{color:#c8c8c8;font-size:13px;margin-top:3px}
 button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 14px;font-weight:650;background:#202124;color:#fff}.button-gold{background:var(--gold);color:#171717}.button-light{background:#f0f0ed;color:#222}.button-quiet{background:transparent;color:inherit;border:1px solid var(--line)}.icon-button{padding:9px 11px;background:#333;color:white}
 main{max-width:780px;margin:0 auto;padding:16px 14px 40px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:13px;box-shadow:0 2px 8px #00000005}
-.balance-card{background:#202124;color:white;border:0;padding:20px}.balance-label{font-size:13px;color:#d0d0d0}.balance{font-size:42px;font-weight:780;letter-spacing:-1.5px;margin:4px 0 2px;font-variant-numeric:tabular-nums}.balance-note{font-size:13px;color:#c7c7c7}.balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.mini-label{font-size:12px;color:#bdbdbd}.mini-value{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}.section-title{font-size:17px;font-weight:750;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.row + .row{margin-top:12px}.money{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.negative{color:var(--red)}.positive{color:var(--green)}
+.balance-card{background:#202124;color:white;border:0;padding:20px}.balance-label{font-size:13px;color:#d0d0d0}.balance{font-size:42px;font-weight:780;letter-spacing:-1.5px;margin:4px 0 2px;font-variant-numeric:tabular-nums}.balance-note{font-size:13px;color:#c7c7c7}.running-balance{margin-top:16px;padding:13px 14px;border:1px solid #ffffff2b;border-radius:13px;background:#ffffff0a}.running-value{font-size:25px;font-weight:750;font-variant-numeric:tabular-nums;margin:2px 0 4px;color:#fff}.balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.mini-label{font-size:12px;color:#bdbdbd}.mini-value{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}.section-title{font-size:17px;font-weight:750;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.row + .row{margin-top:12px}.money{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.negative{color:var(--red)}.positive{color:var(--green)}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}.actions button{padding:14px 10px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field.full{grid-column:1/-1}label{font-size:12px;font-weight:700;color:#52525b}input,select{width:100%;border:1px solid #d4d4d8;border-radius:10px;padding:11px;background:#fff;color:#202124;min-width:0}input[type=checkbox]{width:auto}.form-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.hidden{display:none!important}.transaction{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}.transaction:last-child{border-bottom:0}.tx-icon{height:38px;width:38px;flex:0 0 38px;border-radius:12px;background:#f1f1ef;display:grid;place-items:center;font-weight:800}.tx-main{flex:1;min-width:0}.tx-name{font-weight:650;overflow-wrap:anywhere}.tx-meta{font-size:12px;color:var(--muted)}.tx-amount{font-weight:750;white-space:nowrap;font-variant-numeric:tabular-nums}.tx-tools{display:flex;gap:5px;margin-left:3px}.tx-tools button{padding:6px 8px;font-size:12px;border-radius:8px}.pill{display:inline-block;font-size:11px;border-radius:999px;padding:3px 8px;background:#f2e7d5;color:#77501d;font-weight:700}.notice{background:#fff8e9;border:1px solid #f1ddb2;padding:11px 12px;border-radius:12px;font-size:13px;color:#654b20;margin-bottom:12px}.bill-line{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}.bill-line:last-child{border-bottom:0}.bill-name{font-weight:650}.small-btn{padding:7px 10px;font-size:12px}.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:13px}.tab{background:#e8e8e5;color:#333;white-space:nowrap;padding:9px 12px}.tab.active{background:#202124;color:white}.footer{font-size:12px;color:#777;text-align:center;padding:10px}.empty{color:#777;font-size:14px;padding:15px 0}.summary-line{padding:9px 0;border-bottom:1px solid #f1f1f1}.summary-line:last-child{border-bottom:0}
 @media(max-width:420px){.balance{font-size:36px}.form-grid{grid-template-columns:1fr 1fr}.card{padding:15px}.balance-grid{gap:8px}}
 </style>
@@ -31,9 +32,14 @@ main{max-width:780px;margin:0 auto;padding:16px 14px 40px}.card{background:var(-
 <main>
   <div id="setupNotice" class="notice hidden"></div>
   <section class="card balance-card">
-    <div class="balance-label">AVAILABLE AFTER RESERVING UNPAID BILLS</div>
+    <div class="balance-label">AVAILABLE TO SPEND · AFTER RESERVING UNPAID BILLS</div>
     <div class="balance" id="available">$0.00</div>
-    <div class="balance-note" id="balanceNote">Includes rollover and this month's allowance.</div>
+    <div class="balance-note" id="balanceNote">Includes rollover and this month's allowance, minus all unpaid bills reserved for this month.</div>
+    <div class="running-balance">
+      <div class="mini-label">Running balance after recorded bills and purchases</div>
+      <div class="running-value" id="runningBalance">$0.00</div>
+      <div class="balance-note">This subtracts bills whose due dates have passed and purchases you've logged, but not upcoming unpaid bills.</div>
+    </div>
     <div class="balance-grid">
       <div><div class="mini-label">Unpaid bills reserved</div><div class="mini-value" id="reserved">$0.00</div></div>
       <div><div class="mini-label">This month's spending</div><div class="mini-value" id="spent">$0.00</div></div>
@@ -63,7 +69,7 @@ main{max-width:780px;margin:0 auto;padding:16px 14px 40px}.card{background:var(-
 
   <section id="billsPanel" class="card hidden">
     <div class="row"><h2 class="section-title">Recurring bills</h2><button class="small-btn button-light" id="billAddInline">＋ Add</button></div>
-    <div class="muted">Bills are reserved until their due date, then recorded as paid when the app is opened. This does not move money at your bank.</div>
+    <div class="muted">Unpaid bills for the current month reduce Available to Spend immediately. Each bill is recorded as an expense on or after its actual due date when you open the app. This does not move money at your bank.</div>
     <div id="billsList" style="margin-top:8px"></div>
   </section>
 
@@ -184,7 +190,7 @@ function show(id,yes=true){document.getElementById(id).classList.toggle('hidden'
 function fillDueDays(){const el=document.getElementById('billDay');el.innerHTML=Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}${[1,21,31].includes(i+1)?'st':[2,22].includes(i+1)?'nd':[3,23].includes(i+1)?'rd':'th'} of month</option>`).join('')}
 function render(){
  ensureCredits();processDueBills();save();
- const ym=monthKey(todayISO());document.getElementById('available').textContent=fmt(available());document.getElementById('reserved').textContent=fmt(unpaidBillsThroughCurrent());document.getElementById('spent').textContent=fmt(currentMonthSpend());document.getElementById('rollover').textContent=fmt(rolloverBroughtForward());
+ const ym=monthKey(todayISO());document.getElementById('available').textContent=fmt(available());document.getElementById('runningBalance').textContent=fmt(totalFunds());document.getElementById('reserved').textContent=fmt(unpaidBillsThroughCurrent());document.getElementById('spent').textContent=fmt(currentMonthSpend());document.getElementById('rollover').textContent=fmt(rolloverBroughtForward());
  document.getElementById('nextAllowance').textContent=fmt(state.settings.monthlyAllowance)+' · '+addMonths(ym,1)+'-01';
  document.getElementById('monthLabel').textContent=monthName(ym);
  const start=monthKey(state.settings.startMonth||ym);
